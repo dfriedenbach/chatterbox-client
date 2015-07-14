@@ -3,6 +3,7 @@
 var name = "";
 var roomname = "All";
 var rooms = {};
+var friends = {};
 var posts = {};
   var postMessage = {
     username: name,
@@ -30,6 +31,19 @@ var postRequest = function(message){
 }
 
 
+var addMessage = function(message){
+  var $post = $("<div></div>").text(message.text).addClass(message.username).appendTo($("#chats"));
+  var $span = $("<span></span>").text(message.username + ": ").addClass("username").prependTo($post);
+  var temp = function(){
+    var username = message.username;
+    $span.on('click', function(){
+    console.log(username);
+    app.addFriend(username);
+    }); 
+  }();
+};
+
+
 var getRequest = function(){
   $.ajax({
     url: 'https://api.parse.com/1/classes/chatterbox',
@@ -43,10 +57,11 @@ var getRequest = function(){
       for(var i = 0 ; i < posts.length ; i ++){
         rooms[posts[i].roomname]= posts[i].roomname;
         roomname = $("select")[0].value;
-        if(posts[i].roomname === roomname || roomname === "All"){
-          var $post = $("<div></div>").text(posts[i].text).addClass(posts[i].username).appendTo($("#chats"));
-          var $span = $("<span></span>").text(posts[i].username + ": ").prependTo($post);
-        }
+        // if(posts[i].roomname === roomname || roomname === "All"){
+        addMessage(posts[i]);
+          //ANONYMOUS FUNCTION TO HOLD USERNAME
+
+        // }
       }
       roomMaker();
     },
@@ -60,7 +75,7 @@ var roomMaker = function(){
   $("select option").remove();
    $("<option></option>").text("All").appendTo($("select"));
   for(var key in rooms ){
-    $("<option></option>").text(key).appendTo($("select"));
+    addRoom(key);
   }
 };
 
@@ -74,10 +89,17 @@ $("document").ready(function(){
     getRequest();
   });
 
-  $(".username").click(function(e){
+  $(".usernameFuck").click(function(e){
     name = $("#username")[0].value
   });
 });
+
+var addFriend = function(username){
+  friends[username] = username;
+};
+var addRoom = function(room){
+  $("<option></option>").text(room).appendTo($("#roomSelect"));
+};
 
 
 var app = {
@@ -86,8 +108,9 @@ var app = {
   fetch:getRequest,
   server: "https://api.parse.com/1/classes/chatterbox",
   clearMessages: function(){$("#chats").children().remove();},
-  addMessage: function(message){
-    var $post = $("<div></div>").text(message.text).addClass(message.username).appendTo($("#chats"));
-    var $span = $("<span></span>").text(message.username + ": ").prependTo($post);
-  }
+  addMessage: addMessage,
+  addRoom: addRoom,
+  addFriend: addFriend,
+  handleSubmit: function(){},
+
 };
