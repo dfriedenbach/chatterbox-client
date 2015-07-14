@@ -11,7 +11,7 @@ var posts = {};
     roomname: roomname
   };
 var postRequest = function(message){
-
+  console.log(message);
   $.ajax({
     // This is the url you should use to communicate with the parse API server.
     url: 'https://api.parse.com/1/classes/chatterbox',
@@ -99,7 +99,10 @@ $("document").ready(function(){
       text: $("#message")[0].value,
       roomname: roomname
     }
+    console.log(message);
     app.handleSubmit(message);
+    app.fetch();
+    e.preventDefault();
   });
 });
 
