@@ -92,6 +92,15 @@ $("document").ready(function(){
   $(".usernameFuck").click(function(e){
     name = $("#username")[0].value
   });
+
+  $(".submit").submit(function(e){
+    var message = {
+      username: name,
+      text: $("#message")[0].value,
+      roomname: roomname
+    }
+    app.handleSubmit(message);
+  });
 });
 
 var addFriend = function(username){
@@ -111,6 +120,6 @@ var app = {
   addMessage: addMessage,
   addRoom: addRoom,
   addFriend: addFriend,
-  handleSubmit: function(){},
+  handleSubmit: postRequest,
 
 };
